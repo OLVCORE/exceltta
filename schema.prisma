@@ -1,0 +1,104 @@
+// Empresa e Usuário
+model Empresa {
+  id               String           @id @default(cuid())
+  nome             String
+  cnpj             String           @unique
+  uf               String
+  regimeTributario RegimeTributario
+  usuarios         Usuario[]
+  simulacoes       Simulacao[]
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  Documento        Documento[]
+}
+
+model Usuario {
+  id        String   @id @default(cuid())
+  nome      String
+  email     String   @unique
+  senha     String
+  papel     String // admin, user, consultor, etc.
+  empresaId String
+  empresa   Empresa  @relation(fields: [empresaId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum RegimeTributario {
+  SIMPLES_NACIONAL
+  LUCRO_PRESUMIDO
+  LUCRO_REAL
+}
+
+// Produtos e Simulações
+model Produto {
+  id             String           @id @default(cuid())
+  descricao      String
+  ncm            String
+  unidade        String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  LinhaSimulacao LinhaSimulacao[]
+}
+
+model Simulacao {
+  id        String           @id @default(cuid())
+  empresaId String
+  empresa   Empresa          @relation(fields: [empresaId], references: [id])
+  tipo      String // importacao, nacional, exportacao, etc.
+  status    String // rascunho, finalizada, etc.
+  linhas    LinhaSimulacao[]
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
+
+model LinhaSimulacao {
+  id                   String    @id @default(cuid())
+  simulacaoId          String
+  simulacao            Simulacao @relation(fields: [simulacaoId], references: [id])
+  produtoId            String
+  produto              Produto   @relation(fields: [produtoId], references: [id])
+  origemUF             String
+  destinoUF            String
+  valorUnitario        Float
+  quantidade           Int
+  tipoOperacao         String // compra, venda, industrializacao, etc.
+  resultadoTributario  Json
+  resultadoViabilidade Json
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+}
+
+// Tabelas Tributárias (exemplo inicial)
+model AliquotaICMS {
+  id         String  @id @default(cuid())
+  origemUF   String
+  destinoUF  String
+  ncm        String
+  aliquota   Float
+  tipo       String // interestadual, interna
+  observacao String?
+}
+
+model IncentivoFiscal {
+  id         String  @id @default(cuid())
+  uf         String
+  ncm        String
+  tipo       String // reducao_base, diferimento, isencao, etc.
+  valor      Float?
+  percentual Float?
+  descricao  String?
+}
+
+// Documentos e Uploads
+model Documento {
+  id                String   @id @default(cuid())
+  empresaId         String
+  empresa           Empresa  @relation(fields: [empresaId], references: [id])
+  tipo              String // edital, invoice, relatorio, etc.
+  arquivoUrl        String
+  status            String // processando, extraido, erro, etc.
+  produtosExtraidos Json
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}

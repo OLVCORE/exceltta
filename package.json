@@ -1,0 +1,28 @@
+{
+  "name": "exceltta",
+  "version": "1.0.0",
+  "description": "Exceltta - Plataforma de Simulação Tributária e Viabilidade Econômica",
+  "scripts": {
+    "dev:backend": "cd apps/cepag-engine && npm run start:dev",
+    "dev:frontend": "cd apps/frontend && npm run dev",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build:backend": "cd apps/cepag-engine && npm run build",
+    "build:frontend": "cd apps/frontend && npm run build",
+    "build": "npm run build:backend && npm run build:frontend",
+    "install:all": "npm install && cd apps/cepag-engine && npm install && cd ../frontend && npm install",
+    "prisma:generate": "npx prisma generate",
+    "prisma:migrate": "npx prisma migrate dev",
+    "prisma:studio": "npx prisma studio"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": [
+    "tributario",
+    "simulacao",
+    "viabilidade",
+    "economica"
+  ],
+  "author": "Exceltta Team",
+  "license": "MIT"
+}

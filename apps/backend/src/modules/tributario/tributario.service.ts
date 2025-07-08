@@ -1,0 +1,1 @@
+// ... já existente, adicione métodos reais para buscar incentivos fiscais por UF, NCM, setor 
